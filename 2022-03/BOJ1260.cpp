@@ -4,10 +4,10 @@
 #include <queue>
 using namespace std;
 
-bool visited[1001];
-bool visited2[1001];
-vector<int> graph[1001];
-queue<int> q;
+bool visited[1001];	// For DFS
+bool visited2[1001];	// For BFS
+vector<int> graph[1001];	// Graph
+queue<int> q;	// For BFS
 
 void DFS(int v);
 void BFS(int v);
@@ -19,14 +19,20 @@ int main() {
 	for (int i = 0; i < m; i++) {
 		int temp1, temp2;
 		cin >> temp1 >> temp2;
+		
+		// Two-way edge
 		graph[temp1].push_back(temp2);
 		graph[temp2].push_back(temp1);
 	}
 
 	for (int i = 0; i < 1001; i++) {
 		if (graph[i].size() != 0) {
+
+			// Sort and remove duplicate numbers
 			sort(graph[i].begin(), graph[i].end());
 			graph[i].erase(unique(graph[i].begin(), graph[i].end()), graph[i].end());
+
+			// To check the results of sorting and deleting
 			//for (int j = 0; j < graph[i].size(); j++) {
 			//	cout << i << ' ' << graph[i][j] << " \n";
 			//}
