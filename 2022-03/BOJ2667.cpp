@@ -20,13 +20,17 @@ int main() {
 	
 	cin >> n;
 	
+
+	// Get input
 	for (int i = 1; i < n+1; i++) {			
+		// Get input in string
 		cin >> temp;
 		for (int j = 1; j < n+1; j++) {
 			map[i][j] = temp[j-1] - 48;
 		}
 	}
 
+	// If the coordinates are within range and there is apart, push to graph
 	for (int i = 1; i < n+1; i++) {
 		for (int j = 1; j < n+1; j++) {
 			if (map[i][j] == 1) {
@@ -59,6 +63,7 @@ int main() {
 	}
 
 	cout << BFSCounter << '\n';
+
 	sort(saveNum.begin(), saveNum.end());
 	for (int i = 0; i < saveNum.size(); i++)
 		cout << saveNum[i] << '\n';
