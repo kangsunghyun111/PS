@@ -46,14 +46,6 @@ int main() {
 		}
 	}
 
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= n; j++) {
-			if (dist[i][j] == INF) {
-				dist[i][j] = dist[j][i];
-			}
-		}
-	}
-
 	int score = INF;
 	int cnt = 0;
 	vector<int> v;
