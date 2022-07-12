@@ -36,20 +36,15 @@ int n, m, t, d;
 int map[25][25];
 priority_queue<Mountain> m_pq;
 
-void Dijkstra(int start_x, int start_y) {
+void Dijkstra(int start_x, int start_y, int (*dist)[25]) {
 	priority_queue<Node> pq;
-	int ans = 0;
-	int dist[25][25];
-	int dist_back[25][25];
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			dist[i][j] = INF;
-			dist_back[i][j] = INF;
 		}
 	}
 	dist[start_x][start_y] = 0;
 	pq.push({ start_x,start_y,dist[start_x][start_y] });
-
 	while (!pq.empty()) {
 		Node temp = pq.top();
 		int x = temp.x;
@@ -60,11 +55,14 @@ void Dijkstra(int start_x, int start_y) {
 		if (cost >= d)
 			continue;
 
+		if (dist[x][y] < cost)
+			continue;
+
 		for (int i = 0; i < 4; i++) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
 			int next_cost = cost;
-			
+
 			if (nx < 0 || ny < 0 || nx >= n || ny >= m)
 				continue;
 
@@ -87,62 +85,6 @@ void Dijkstra(int start_x, int start_y) {
 			}
 		}
 	}
-
-	while (!m_pq.empty()) {
-		Mountain temp = m_pq.top();
-		int mx = temp.x;
-		int my = temp.y;
-		int height = temp.height;
-		m_pq.pop();
-		dist_back[mx][my] = dist[mx][my];
-		pq.push({ mx,my,dist_back[mx][my] });
-		while (!pq.empty()) {
-			Node temp = pq.top();
-			int x = temp.x;
-			int y = temp.y;
-			int cost = temp.cost;
-			pq.pop();
-
-			if (cost >= d)
-				continue;
-
-			for (int i = 0; i < 4; i++) {
-				int nx = x + dx[i];
-				int ny = y + dy[i];
-				int next_cost = cost;
-
-				if (nx < 0 || ny < 0 || nx >= n || ny >= m)
-					continue;
-
-				int diff = abs(map[nx][ny] - map[x][y]);
-				if (diff <= t) {
-					if (map[nx][ny] <= map[x][y]) {
-						next_cost++;
-						if (dist_back[nx][ny] > next_cost) {
-							dist_back[nx][ny] = next_cost;
-							pq.push({ nx,ny,next_cost });
-						}
-					}
-					else {
-						next_cost += diff * diff;
-						if (dist_back[nx][ny] > next_cost) {
-							dist_back[nx][ny] = next_cost;
-							pq.push({ nx,ny,next_cost });
-						}
-					}
-				}
-			}
-		}
-
-		if (dist_back[0][0] <= d) {
-			cout << map[mx][my];
-			return;
-		}
-	}
-
-	cout << ans;
-	
-	return;
 }
 
 int main() {
@@ -161,7 +103,24 @@ int main() {
 		}
 	}
 
-	Dijkstra(0 ,0);
+	int dist[25][25];
+	int dist_back[25][25];
+
+	Dijkstra(0, 0, dist);
+
+	while (!m_pq.empty()) {
+		Mountain temp = m_pq.top();
+		int x = temp.x;
+		int y = temp.y;
+		int height = temp.height;
+		m_pq.pop();
+		Dijkstra(x, y, dist_back);
+
+		if (dist_back[0][0] + dist[x][y] <= d) {
+			cout << height;
+			break;
+		}
+	}
 
 	return 0;
 }
